@@ -14,7 +14,11 @@ class PDFGraphicsRenderer {
     static let A4Width: CGFloat = 595.2
     static let A4Height: CGFloat = 841.8
     
-    let pageRect = CGRect(x: 0, y: 0, width: A4Width, height: A4Height)
+    var pageRect = CGRect(x: 0, y: 0, width: A4Width, height: A4Height)
+    var margin = CGPoint(x: 10, y: 10)
+    var marginSize: CGSize {
+        return CGSize(width: margin.x * 2, height: margin.y * 2)
+    }
     
     var headlineText: String = ""
     var bodyText: String = ""
@@ -28,17 +32,18 @@ class PDFGraphicsRenderer {
         ]
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
+        
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
         let data = renderer.pdfData { (context) in
             context.beginPage()
             
             var imageOffset = addHeadline(headlineText, topOffset: 40)
+            imageOffset = addHeadline(headlineText, topOffset: imageOffset)
             for image in images {
                 imageOffset = addImage(image, topOffset: imageOffset)
             }
             print("BodyText Top : \(imageOffset)")
-            // TODO: - 两张图片后，无法显示 Body
-            addBody(bodyText, topOffset: imageOffset)
+            addText(bodyText, topOffset: imageOffset + 10, pdfContext: context)
         }
         
         return data
@@ -86,5 +91,62 @@ extension PDFGraphicsRenderer {
         let imageRect = CGRect(x: imageX, y: topOffset, width: scaledWidth, height: scaledHeight)
         image.draw(in: imageRect)
         return imageRect.origin.y + imageRect.size.height
+    }
+    
+    func addText(_ text: String, topOffset: CGFloat, pdfContext: UIGraphicsPDFRendererContext) {
+        let textRect = CGRect(x: margin.x, y: -topOffset,
+                              width: pageRect.width - marginSize.width,
+                              height: pageRect.height - topOffset - margin.y)
+        
+        var result = renderText(text, textRect: textRect)
+        while result.textRange.location != result.textLocation {
+            // 新起一页 PDF
+            pdfContext.beginPage()
+            let textRect = CGRect(x: margin.x, y: -margin.y,
+                                  width: pageRect.width - marginSize.width,
+                                  height: pageRect.height - marginSize.height)
+            result = renderText(text, range: result.textRange, textRect: textRect)
+        }
+//        let lines = CTFrameGetLines(frameRef) as Array
+//            var origins = [CGPoint](repeating: .zero, count: lines.count)
+//            CTFrameGetLineOrigins(frameRef, CFRangeMake(0, 0), &origins)
+//            let last = origins.last?.y ?? 0
+//            print("最后一行文字 Y 坐标: \(last)")
+    }
+    
+    func renderText(_ text: String, range: CFRange = CFRangeMake(0, 0), textRect: CGRect) -> (textRange: CFRange, textLocation: CFIndex) {
+        // 字体，段落
+        let textFont = UIFont.systemFont(ofSize: 50.0, weight: .regular)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .natural
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        let textAttributes = [
+            NSAttributedString.Key.paragraphStyle: paragraphStyle,
+            NSAttributedString.Key.font: textFont
+        ]
+
+        let currentText = CFAttributedStringCreate(nil, text as CFString, textAttributes as CFDictionary)
+        let framesetter = CTFramesetterCreateWithAttributedString(currentText!)
+        var currentRange = range
+        
+        print("文本textRect: \(textRect)")
+        // 绘制文字段落
+        let framePath = CGMutablePath()
+        framePath.addRect(textRect, transform: .identity)
+        let frameRef = CTFramesetterCreateFrame(framesetter, currentRange, framePath, nil)
+        
+        let context = UIGraphicsGetCurrentContext()!
+        context.textMatrix = .identity
+        // 翻转 Context
+        context.translateBy(x: 0, y: textRect.height)
+        context.scaleBy(x: 1, y: -1)
+        CTFrameDraw(frameRef, context)
+        
+        // 获取在 frameRect 内绘制的文字的 Range
+        currentRange = CTFrameGetVisibleStringRange(frameRef)
+        currentRange.location += currentRange.length
+        currentRange.length = CFIndex(0)
+        
+        return (currentRange, CFAttributedStringGetLength(currentText))
     }
 }

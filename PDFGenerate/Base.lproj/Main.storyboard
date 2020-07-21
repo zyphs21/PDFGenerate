@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="p59-xN-I53">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="p59-xN-I53">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -100,12 +101,13 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="输入正文内容" translatesAutoresizingMaskIntoConstraints="NO" id="1tw-2T-aMK">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1tw-2T-aMK">
                                                 <rect key="frame" x="20" y="84" width="374" height="100"/>
                                                 <color key="backgroundColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="100" id="QSm-Aq-vwd"/>
                                                 </constraints>
+                                                <mutableString key="text">输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容henchang真的非常长的这里是这里是输入文本库输入的是正文内容入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容henchang真的非常长的这里是这里是输入文本库输入的是正文内容入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容henchang真的非常长的这里是这里是输入文本库输入的是正文内容入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容输入正文内容henchang真的非常长的这里是这里是输入文本库输入的是正文内容</mutableString>
                                                 <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
